@@ -4,8 +4,8 @@ const db = config.get('mongoURI')
 
 const connectDB = async () => {
   try {
-    await mongoose.connect(db, {useNewUrlParser:true, useUnifiedTopology:true})
-    console.log("MongoDB connected...")
+    await mongoose.connect(db, {useNewUrlParser: true, useUnifiedTopology: true, useFindAndModify: false})
+    console.log('MongoDB connected...')
   } catch (e) {
     console.error(e.message)
     process.exit(1)

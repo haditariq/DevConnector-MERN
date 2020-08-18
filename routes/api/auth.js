@@ -1,12 +1,65 @@
-const express = require("express")
-const router = express.Router()
+const express = require('express');
+const router = express.Router();
+const {check, validationResult} = require('express-validator');
+const bcrypt = require('bcryptjs');
 
-// @route   Get api/auth
-// @desc    get all user test router
+//models
+const User = require('../../models/User');
+
+// middleware
+const auth = require('../../middleware/authentication');
+
+// helpers
+const {jwtSign} = require('../../helpers/jwt');
+
+// @route   Post api/auth
+// @desc    get user auth
 // @access  public
-router.get("/", (req, res, next) => {
-  res.json("Auth route.")
-})
+router.post('/', auth, async (req, res, next) => {
+  try {
+    const user = await User.findById(req.user.id)
+    res.status(200).json(user)
+  } catch (e) {
+    console.log(e.message)
+    res.status(500).json('Server Error')
+  }
+});
 
 
-module.exports = router
+// @route   POST api/auth/login
+// @desc    authenticate user & get token
+// @access  public
+router.post(
+  '/login',
+  [
+    check('email', 'Valid email required').isEmail().trim(),
+    check(
+      'password',
+      'Password is required.'
+    ).exists()
+  ],
+  async (req, res) => {
+    const errors = validationResult(req);
+    if (!errors.isEmpty()) {
+      return res.status(400).json(errors)
+    }
+
+    const {email, password} = req.body;
+    try {
+      let user = await User.findOne({email}).select('+password');
+      if (!user) throw {errors: [{msg: 'Invalid credentials.'}]};
+      console.log(user);
+      const isMatch = await bcrypt.compare(password, user.password);
+      if (!isMatch) {
+        throw {errors: [{msg: 'Invalid credentials.'}]}
+      }
+      let token = await jwtSign(user.id);
+      await res.status(500).json({token, user});
+    } catch (e) {
+      console.log(e);
+      res.status(500).json(e.message ? e.message : e);
+    }
+  }
+);
+
+module.exports = router;

@@ -1,4 +1,5 @@
 {
-  "mongoURI": "mongodb+srv://admin:admin123@cluster0.qlmkd.mongodb.net/devConnector?retryWrites=true&w=majority"
-
+//  "mongoURI": "mongodb+srv://admin:admin123@cluster0.qlmkd.mongodb.net/devConnector?retryWrites=true&w=majority",
+  "mongoURI": "mongodb://admin:admin123@cluster0-shard-00-00.qlmkd.mongodb.net:27017,cluster0-shard-00-01.qlmkd.mongodb.net:27017,cluster0-shard-00-02.qlmkd.mongodb.net:27017/devConnector?ssl=true&replicaSet=atlas-fl2709-shard-0&authSource=admin&retryWrites=true&w=majority",
+  "jwtSecret": "mySecretKey"
 }

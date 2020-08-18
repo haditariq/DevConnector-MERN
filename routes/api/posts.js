@@ -5,6 +5,7 @@ const router = express.Router()
 // @desc    get all user test router
 // @access  public
 router.get("/", (req, res, next) => {
+  next()
   res.json("posts route.")
 })
 
