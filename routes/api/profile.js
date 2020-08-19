@@ -1,12 +1,14 @@
 const express = require('express');
 const router = express.Router();
 const auth = require('../../middleware/authentication');
-const { check, validationResult } = require('express-validator');
+const { body, check, validationResult } = require('express-validator');
 const config = require('config');
 const request = require('request');
 // Models
 const Profile = require('../../models/Profile');
 const User = require('../../models/User');
+// helpers
+const { validate } = require('../../helpers/validationResult');
 
 // @route   Get api/profile/me
 // @desc    get current user profile
@@ -34,12 +36,14 @@ router.post(
   '/',
   [
     auth,
-    check('status', 'Status is required.')
-      .not()
-      .isEmpty(),
-    check('skills', 'Skills is required.')
-      .not()
-      .isEmpty()
+    validate([
+      check('status', 'Status is required.')
+        .not()
+        .isEmpty(),
+      check('skills', 'Skills is required.')
+        .not()
+        .isEmpty()
+    ])
   ],
   async (req, res) => {
     const errors = validationResult(req);
@@ -165,15 +169,17 @@ router.put(
   '/experience',
   [
     auth,
-    check('title', 'Title is required.')
-      .not()
-      .isEmpty(),
-    check('company', 'Company is required.')
-      .not()
-      .isEmpty(),
-    check('from', 'From date is required.')
-      .not()
-      .isEmpty()
+    validate([
+      check('title', 'Title is required.')
+        .not()
+        .isEmpty(),
+      check('company', 'Company is required.')
+        .not()
+        .isEmpty(),
+      check('from', 'From date is required.')
+        .not()
+        .isEmpty()
+    ])
   ],
   async (req, res) => {
     const errors = validationResult(req);
@@ -256,4 +262,5 @@ router.get('/github/:username', async (req, res) => {
     res.status(500).json(e.message ? { errors: [{ msg: e.message }] } : e);
   }
 });
+
 module.exports = router;
