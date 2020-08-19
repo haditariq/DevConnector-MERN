@@ -79,7 +79,7 @@ router.get('/:id', auth, async (req, res) => {
 // @access  Private
 router.delete('/:id', auth, async (req, res) => {
   try {
-    const post = await Post.findById(req.params.id).sort({ date: -1 });
+    const post = await Post.findById(req.params.id);
     if (!post) {
       throw { errors: [{ msg: 'No, post found.' }] };
     }
@@ -88,6 +88,58 @@ router.delete('/:id', auth, async (req, res) => {
     }
     await post.remove();
     await res.json({ msg: 'Post removed.' });
+  } catch (e) {
+    console.error(e.message ? { msg: e.message } : e);
+    if (e.kind) {
+      res.status(500).json({ errors: [{ msg: 'Server error.' }] });
+    }
+    res.status(500).json(e.message ? { errors: [{ msg: e.message }] } : e);
+  }
+});
+
+// @route   DELETE api/posts
+// @desc    delete a post
+// @access  Private
+router.put('/like/:id', auth, async (req, res) => {
+  try {
+    const post = await Post.findById(req.params.id);
+    if (
+      post.likes.filter(like => like.user.toString() === req.user.id).length > 0
+    ) {
+      throw { errors: [{ msg: 'Post already liked.' }] };
+    }
+
+    post.likes.unshift({ user: req.user.id });
+    const check = await post.save();
+    await res.json(check);
+  } catch (e) {
+    console.error(e.message ? { msg: e.message } : e);
+    if (e.kind) {
+      res.status(500).json({ errors: [{ msg: 'Server error.' }] });
+    }
+    res.status(500).json(e.message ? { errors: [{ msg: e.message }] } : e);
+  }
+});
+
+// @route   DELETE api/posts
+// @desc    delete a post
+// @access  Private
+router.put('/unlike/:id', auth, async (req, res) => {
+  try {
+    const post = await Post.findById(req.params.id);
+    if (
+      post.likes.filter(like => like.user.toString() === req.user.id).length === 0
+    ) {
+      throw { errors: [{ msg: 'Post has not yet been liked.' }] };
+    }
+
+    const removeIdx = post.likes
+      .map(like => like.user.toString())
+      .indexOf(req.user.id);
+    post.likes.splice(removeIdx, 1);
+
+    const check = await post.save();
+    await res.json(check);
   } catch (e) {
     console.error(e.message ? { msg: e.message } : e);
     if (e.kind) {
