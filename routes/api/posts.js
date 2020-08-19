@@ -187,4 +187,33 @@ router.put(
   }
 );
 
+// @route   PUT api/post/comment/:id
+// @desc    comment on post
+// @access  Private
+router.delete('/comment/:id/:comment_id', auth, async (req, res) => {
+  try {
+    const post = await Post.findById(req.params.id);
+    const comment = post.comments.find(
+      comment => comment.id === req.params.comment_id
+    );
+    if (!comment) {
+      throw { errors: [{ msg: 'Comment not found.' }] };
+    }
+
+    const removeIdx = post.comments
+      .map(comment => comment.user.toString())
+      .indexOf(req.user.id);
+    post.comments.splice(removeIdx, 1);
+
+    await post.save();
+    await res.json(post.comments);
+  } catch (e) {
+    console.error(e.message ? { msg: e.message } : e);
+    if (e.kind) {
+      res.status(500).json({ errors: [{ msg: 'Server error.' }] });
+    }
+    res.status(500).json(e.message ? { errors: [{ msg: e.message }] } : e);
+  }
+});
+
 module.exports = router;
