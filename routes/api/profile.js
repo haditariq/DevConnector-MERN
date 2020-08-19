@@ -1,9 +1,10 @@
 const express = require('express');
 const router = express.Router();
 const auth = require('../../middleware/authentication');
-const { body, check, validationResult } = require('express-validator');
+const {check } = require('express-validator');
 const config = require('config');
 const request = require('request');
+
 // Models
 const Profile = require('../../models/Profile');
 const User = require('../../models/User');
@@ -46,7 +47,6 @@ router.post(
     ])
   ],
   async (req, res) => {
-    const errors = validationResult(req);
     const {
       company,
       website,
@@ -61,9 +61,7 @@ router.post(
       instagram,
       linkedin
     } = req.body;
-    if (!errors.isEmpty()) {
-      res.status(500).json(errors);
-    }
+
     const profileFields = {};
     // Build profile fields
     profileFields.user = req.user.id;
@@ -182,10 +180,6 @@ router.put(
     ])
   ],
   async (req, res) => {
-    const errors = validationResult(req);
-    if (!errors) {
-      return res.state(400).json({ errors });
-    }
     const {
       title,
       company,
