@@ -15,7 +15,7 @@ const {jwtSign} = require('../../helpers/jwt');
 // @route   Post api/auth
 // @desc    get user auth
 // @access  public
-router.post('/', auth, async (req, res, next) => {
+router.get('/', auth, async (req, res, next) => {
   try {
     const user = await User.findById(req.user.id)
     res.status(200).json(user)
@@ -48,13 +48,12 @@ router.post(
     try {
       let user = await User.findOne({email}).select('+password');
       if (!user) throw {errors: [{msg: 'Invalid credentials.'}]};
-      console.log(user);
       const isMatch = await bcrypt.compare(password, user.password);
       if (!isMatch) {
         throw {errors: [{msg: 'Invalid credentials.'}]}
       }
       let token = await jwtSign(user.id);
-      await res.status(500).json({token, user});
+      await res.json({token, user});
     } catch (e) {
       console.log(e);
       res.status(500).json(e.message ? e.message : e);
