@@ -18,7 +18,7 @@ const {jwtSign} = require('../../helpers/jwt');
 router.get('/', auth, async (req, res, next) => {
   try {
     const user = await User.findById(req.user.id)
-    res.status(200).json(user)
+    res.status(200).json({user})
   } catch (e) {
     console.log(e.message)
     res.status(500).json('Server Error')
@@ -53,7 +53,7 @@ router.post(
         throw {errors: [{msg: 'Invalid credentials.'}]}
       }
       let token = await jwtSign(user.id);
-      await res.json({token, user});
+      await res.json({token});
     } catch (e) {
       console.log(e);
       res.status(500).json(e.message ? e.message : e);

@@ -4,6 +4,7 @@ import thunk from 'redux-thunk';
 import alert from './alert/reducers';
 import { combineReducers } from 'redux';
 import register from './auth/reducers';
+import profile from './profile/reducers';
 
 const initialState = {};
 const middleware = [thunk];
@@ -11,7 +12,8 @@ const middleware = [thunk];
 // Reducers
 const rootReducer = combineReducers({
   alert,
-  register
+  register,
+  profile
 });
 
 const store = createStore(

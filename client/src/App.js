@@ -37,7 +37,7 @@ const App = () => {
             <Switch>
               <Route exact path={'/Register'} component={Register} />
               <Route exact path={'/login'} component={Login} />
-              <PrivateRoute exact path={'/dashboard'} component={Dashboard} />
+              <Route exact path={'/dashboard'} component={Dashboard} />
             </Switch>
           </section>
         </Fragment>

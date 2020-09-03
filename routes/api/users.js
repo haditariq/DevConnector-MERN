@@ -57,7 +57,7 @@ router.post(
 
       user = await user.save();
       let token = await jwtSign(user.id);
-      await res.json({ token, user });
+      await res.json({ token });
     } catch (e) {
       res.status(500).json(e);
     }
