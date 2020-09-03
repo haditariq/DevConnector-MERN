@@ -26,7 +26,7 @@ const Login = ({ reduxLogin, isAuthenticated }) => {
 
   // Redirect if loggedin
   if (isAuthenticated){
-    return <Redirect to={"/dasboard"}/>
+    return <Redirect to={"/dashboard"}/>
   }
   return (
     <Fragment>
@@ -58,7 +58,7 @@ const Login = ({ reduxLogin, isAuthenticated }) => {
             onChange={e => onChange(e)}
           />
         </div>
-        <input type='submit' className='btn btn-primary' value='Register' />
+        <input type='submit' className='btn btn-primary' value='Login' />
       </form>
       <p className='my-1'>
         Don't have an account? <Link to='/register'>Sign Up</Link>
@@ -73,7 +73,7 @@ Login.propTypes = {
 };
 
 const mapStateToProps = state => ({
-  isAuthenticated: state.auth.isAuthenticated
+  isAuthenticated: state.register.isAuthenticated
 })
 
 export default connect(mapStateToProps, { reduxLogin: login })(Login);

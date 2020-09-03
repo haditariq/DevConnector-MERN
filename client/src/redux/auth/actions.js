@@ -4,26 +4,23 @@ import {
   AUTH_ERROR,
   USER_LOADED,
   LOGIN_FAIL,
-  LOGIN_SUCCESS
+  LOGIN_SUCCESS, LOGOUT
 } from './types';
 import axios from 'axios';
 import { setAlert } from '../alert/actions';
 import setAuthToken from '../../utils/setAuthToken';
 
 export const loadUSer = () => async dispatch => {
-  console.log(localStorage.token)
   if (localStorage.token) {
     setAuthToken(localStorage.token);
   }
   try {
     const res = await axios.get('http://localhost:5000/api/auth/');
-    console.log({res1:res})
     dispatch({
       type: USER_LOADED,
       payload: res.data
     });
   } catch (e) {
-    console.log("asdfa")
     console.log(e.message)
     dispatch({
       type: AUTH_ERROR
@@ -64,7 +61,6 @@ export const login = ({ email, password }) => async dispatch => {
   const body = JSON.stringify({ email, password });
   try {
     const res = await axios.post('/api/auth/login', body, config);
-    console.log("ASDFA",{res})
     dispatch({
       type: LOGIN_SUCCESS,
       payload: res.data
@@ -78,4 +74,12 @@ export const login = ({ email, password }) => async dispatch => {
       type: LOGIN_FAIL
     });
   }
+};
+
+
+export const logout = () => async dispatch => {
+  console.log("logout action dispatch")
+    dispatch({
+      type: LOGOUT
+    });
 };

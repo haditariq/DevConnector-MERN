@@ -24,18 +24,17 @@ const Register = ({ setAlert, register, isAuthenticated }) => {
 
   const onSubmit = async e => {
     e.preventDefault();
-    register({name, email, password});
 
     if (password !== password2) {
       setAlert("Password's do not match.", 'danger', 3000);
     } else {
-      console.log('SUCCESS');
+      register({name, email, password});
     }
   };
 
   // Redirect if loggedin
   if (isAuthenticated){
-    return <Redirect to={"/dasboard"}/>
+    return <Redirect to={"/dashboard"}/>
   }
 
   return (
@@ -101,6 +100,6 @@ Register.propTypes = {
   register: PropTypes.func.isRequired,
 };
 const mapStateToProps = state => ({
-  isAuthenticated: state.auth.isAuthenticated
+  isAuthenticated: state.register.isAuthenticated
 })
 export default connect(mapStateToProps, { setAlert, register })(Register);
